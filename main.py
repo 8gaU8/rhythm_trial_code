@@ -8,7 +8,7 @@ from .msg_config import BASE_MSGS, BASE_TIME, PROBE_TONE, TIGGER_MSGS
 from .utils import init_sound_player, wait_until
 
 
-def run_stim(delay: float, scale: float, stim_sound_file: str):
+def run_stim(delay: float, scale: float, stim_sound_file: str, sound: bool = True):
     Message.time_scale = scale
     init_sound_player(stim_sound_file=stim_sound_file)
 
@@ -26,7 +26,7 @@ def run_stim(delay: float, scale: float, stim_sound_file: str):
     start_time = time.time()
     for msg in stim_series:
         wait_until(start_time + msg.time)
-        msg.play()
+        msg.play(sound=sound)
         logging.info(msg)
         error_list.append((time.time() - start_time) - msg.time)
 
@@ -39,7 +39,9 @@ def run_stim(delay: float, scale: float, stim_sound_file: str):
 
 
 def main():
-    print(run_stim(-0.2, 1.61973499606565001))
+    print(run_stim(-0.2, 1.61973499606565001, "../sound/SD0050.WAV"))
+    time.sleep(1)
+    print(run_stim(-0.2, 1.61973499606565001, "../sound/SD0050.WAV", sound=False))
     time.sleep(1)
 
 
