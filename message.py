@@ -3,6 +3,8 @@ from typing import List, Protocol
 
 from pygame import mixer
 
+from .serial_trigger import fire
+
 
 # Annotation Class for play functions
 class PlayFuncType(Protocol):
@@ -36,7 +38,7 @@ def play_sound(sound: bool) -> None:
 
 
 def play_trigger(sound: bool) -> None:
-    print("fired")
+    fire([0x01])
 
 
 def play_none(sound: bool) -> None:
