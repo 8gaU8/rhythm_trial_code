@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 from psychopy import core
@@ -21,3 +22,12 @@ def init_sound_player(stim_sound_file):
     mixer.init(freq, bitsize, channels, buffer)
     mixer.music.set_volume(0.8)
     mixer.music.load(stim_sound_file)
+
+
+def fire_and_forget(func):
+    def wrapper(*args, **kwargs):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        return loop.run_in_executor(None, func, *args, *kwargs)
+
+    return wrapper

@@ -1,35 +1,49 @@
 from copy import deepcopy
-from typing import Callable, List
+from typing import List, Protocol
 
 from pygame import mixer
+
+from .serial_trigger import fire
+
+
+# Annotation Class for play functions
+class PlayFuncType(Protocol):
+    __name__: str
+
+    def __call__(self, sound: bool) -> None:
+        ...
 
 
 class Message:
     time_scale: float = 1.0
 
-    def __init__(self, play: Callable[..., bool], time: float):
+    def __init__(self, play: PlayFuncType, time: float):
         self.time = time * self.time_scale
-        self._play = play
+        self._play: PlayFuncType = play
 
-    def play(self) -> bool:
-        return self._play()
+    def play(self, sound: bool) -> None:
+        self._play(sound=sound)
 
     def __repr__(self) -> str:
-        return f"Message(play={self._play.__name__}, time={self.time})"
+        return f"Message({self._play.__name__}, time={self.time})"
+
+    def __str__(self) -> str:
+        return self.__repr__()
 
 
-def play_sound():
-    mixer.music.play()
-    return True
+# play functions
+def play_sound(sound: bool) -> None:
+    if sound:
+        mixer.music.play()
 
 
-def play_trigger():
-    print("fired")
-    return True
+def play_trigger(sound: bool) -> None:
+    fire([0x01])
 
 
-def play_none():
-    return True
+def play_none(sound: bool) -> None:
+    # return True
+    ...
 
 
 def get_stim_series(
