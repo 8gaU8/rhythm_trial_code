@@ -1,6 +1,6 @@
 from .message import Message, play_none, play_sound, play_trigger
 
-SCALE = 0.8
+SCALE = 1.0
 BASE_TIME = 3
 
 

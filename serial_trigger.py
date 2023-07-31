@@ -1,7 +1,4 @@
 # from serial import Serial
-import threading
-import time
-
 from psychopy import core
 
 from .dummy_serial import Serial
@@ -14,7 +11,7 @@ PULSE_WIDTH = 0.01
 def read_thread(port: Serial):
     while connected:
         if port.in_waiting > 0:
-            print("0x%X" % ord(port.read(1)))
+            print("0x%X" % (port.read(1)))
 
 
 @fire_and_forget
