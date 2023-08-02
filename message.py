@@ -43,9 +43,9 @@ def play_none(sound: bool) -> None:
     ...
 
 
-def play_trigger_factory(port: Serial) -> PlayFuncType:
+def play_trigger_factory(port: Serial, data:List[int]) -> PlayFuncType:
     def play_trigger(sound: bool) -> None:
-        fire(port, [2])
+        fire(port, data)
 
     return play_trigger
 
