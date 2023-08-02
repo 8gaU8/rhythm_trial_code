@@ -2,6 +2,7 @@ from copy import deepcopy
 from typing import List, Protocol
 
 from pygame import mixer
+from serial import Serial
 
 from .serial_trigger import fire
 
@@ -37,13 +38,16 @@ def play_sound(sound: bool) -> None:
         mixer.music.play()
 
 
-def play_trigger(sound: bool) -> None:
-    fire([0x01])
-
-
 def play_none(sound: bool) -> None:
     # return True
     ...
+
+
+def play_trigger_factory(port: Serial) -> PlayFuncType:
+    def play_trigger(sound: bool) -> None:
+        fire(port, [2])
+
+    return play_trigger
 
 
 def get_stim_series(

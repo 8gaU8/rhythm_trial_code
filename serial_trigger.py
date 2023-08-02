@@ -1,22 +1,22 @@
-# from serial import Serial
-from psychopy import core
+from typing import List
 
-from .dummy_serial import Serial
+from psychopy import core
+from serial import Serial
+
 from .utils import fire_and_forget
 
 connected = True
-PULSE_WIDTH = 0.01
+PULSE_WIDTH = 0.05
 
 
 def read_thread(port: Serial):
     while connected:
         if port.in_waiting > 0:
-            print("0x%X" % (port.read(1)))
+            print(port.read(1))
 
 
 @fire_and_forget
-def fire(data):
-    global port
+def fire(port: Serial, data: List[int]):
     port.write(data)
     core.wait(PULSE_WIDTH)
     port.write

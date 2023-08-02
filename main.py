@@ -4,19 +4,21 @@ import time
 import numpy as np
 
 from .message import Message, get_stim_series
-from .msg_config import BASE_MSGS, BASE_TIME, PROBE_TONE, TIGGER_MSGS
+from .msg_config import BASE_TIME, build_base_msgs, build_probe_tone, build_trigger_msgs
 from .utils import init_sound_player, wait_until
 
 
-def run_stim(delay: float, scale: float, stim_sound_file: str, sound: bool = True):
+def run_stim(
+    port, delay: float, scale: float, stim_sound_file: str, sound: bool = True
+):
     Message.time_scale = scale
     init_sound_player(stim_sound_file=stim_sound_file)
 
     stim_series = get_stim_series(
-        base_msgs=BASE_MSGS,
+        base_msgs=build_base_msgs(port),
         base_times=BASE_TIME,
-        trigger_msgs=TIGGER_MSGS,
-        probe_tone=PROBE_TONE,
+        trigger_msgs=build_trigger_msgs(port),
+        probe_tone=build_probe_tone(port),
         probe_delay=delay,
     )
     print(stim_series)
@@ -36,18 +38,3 @@ def run_stim(delay: float, scale: float, stim_sound_file: str, sound: bool = Tru
 
     print(f"error is {mean} ± {std} sec")
     return start_time, stim_series[-1].time
-
-
-def main():
-    print(run_stim(-0.2, 1.61973499606565001, "../sound/SD0050.WAV"))
-    time.sleep(1)
-    print(run_stim(-0.2, 1.61973499606565001, "../sound/SD0050.WAV", sound=False))
-    time.sleep(1)
-
-
-if __name__ == "__main__":
-    import os
-    from pathlib import Path
-
-    os.chdir(Path(__file__).parent)
-    main()
