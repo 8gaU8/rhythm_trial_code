@@ -1,4 +1,5 @@
 from typing import List
+import time
 
 from psychopy import core
 from serial import Serial
@@ -18,6 +19,7 @@ def read_thread(port: Serial):
 @fire_and_forget
 def fire(port: Serial, data: List[int]):
     port.write(data)
+    print(time.time())
     core.wait(PULSE_WIDTH)
     port.write
 
