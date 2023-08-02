@@ -15,13 +15,16 @@ def read_thread(port: Serial):
         if port.in_waiting > 0:
             print(port.read(1))
 
+def fire(port: Serial, data: List[int]):
+    print(time.time())
+    port.write(data)
+    sleep_and_reset(port)
+
 
 @fire_and_forget
-def fire(port: Serial, data: List[int]):
-    port.write(data)
-    print(time.time())
+def sleep_and_reset(port: Serial):
     core.wait(PULSE_WIDTH)
-    port.write
+    port.write([0])
 
 
 # # Open the Windows device manager, search for the "TriggerBox VirtualSerial Port (COM6)"
