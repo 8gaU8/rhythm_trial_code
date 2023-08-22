@@ -2,10 +2,12 @@ from typing import List
 
 from serial import Serial
 
-from .message import Message, play_sound_trigger_factory, play_trigger_factory
-
-SCALE = 1.0
-BASE_TIME = 3
+from .message import (
+    Message,
+    play_none,
+    play_sound_trigger_factory,
+    play_trigger_factory,
+)
 
 
 def build_base_msgs(port: Serial) -> List[Message]:
@@ -23,7 +25,7 @@ def build_base_msgs(port: Serial) -> List[Message]:
         Message(play_sound_trigger, time=1.25),
         Message(play_sound_trigger, time=1.5),
         Message(play_trigger_234, time=1.5),
-        Message(play_sound_trigger, time=2.0),
+        Message(play_none, time=2.0),
     ]
     return msg_series
 
