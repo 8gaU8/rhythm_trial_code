@@ -2,6 +2,8 @@ from typing import List
 
 from serial import Serial
 
+BASE_TIMES = 3
+
 from .message import (
     Message,
     play_none,

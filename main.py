@@ -4,7 +4,7 @@ import time
 import numpy as np
 
 from .message import Message, get_stim_series
-from .msg_config import BASE_TIME, build_base_msgs, build_probe_tone, build_trigger_msgs
+from .msg_config import BASE_TIMES, build_base_msgs, build_probe_tone, build_trigger_msgs
 from .utils import init_sound_player, wait_until
 
 
@@ -16,7 +16,7 @@ def run_stim(
 
     stim_series = get_stim_series(
         base_msgs=build_base_msgs(port),
-        base_times=BASE_TIME,
+        base_times=BASE_TIMES,
         trigger_msgs=build_trigger_msgs(port),
         probe_tone=build_probe_tone(port),
         probe_delay=delay,
