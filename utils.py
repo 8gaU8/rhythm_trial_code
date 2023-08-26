@@ -13,7 +13,7 @@ def wait_until(target_time: float):
     return
 
 
-def init_sound_player(stim_sound_file):
+def init_sound_player():
     # init sound player
     freq = 44100  # audio CD quality
     bitsize = -16  # unsigned 16 bit
@@ -21,7 +21,6 @@ def init_sound_player(stim_sound_file):
     buffer = 1024  # number of samples
     mixer.init(freq, bitsize, channels, buffer)
     mixer.music.set_volume(0.8)
-    mixer.music.load(stim_sound_file)
 
 
 def fire_and_forget(func):

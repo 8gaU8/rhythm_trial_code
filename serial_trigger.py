@@ -25,13 +25,13 @@ def init_port(id: str, dummy: "bool" = False) -> "DummySerial|Serial":
     return port
 
 
-def fire(port: "Serial", data: "List[int]"):
-    print(time.time())
+def fire(port: "Serial|DummySerial", data: "List[int]"):
+    # print(time.time())
     port.write(data)
     sleep_and_reset(port)
 
 
 @fire_and_forget
-def sleep_and_reset(port: "Serial"):
+def sleep_and_reset(port: "Serial|DummySerial"):
     time.sleep(PULSE_WIDTH)
     port.write([0])

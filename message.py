@@ -4,6 +4,7 @@ from typing import List, Protocol
 from pygame import mixer
 from serial import Serial
 
+from .dummy_serial import DummySerial
 from .serial_trigger import fire
 
 
@@ -32,66 +33,36 @@ class Message:
         return self.__repr__()
 
 
-# play functions
-def play_sound(sound: bool) -> None:
-    if sound:
-        mixer.music.play()
+class PlayFactories:
+    def __init__(self, soundfiles: "list[str]") -> None:
+        self.sounds = []
+        for file in soundfiles:
+            self.sounds.append(mixer.Sound(file))
 
+    # play functions
+    def play_none(self, sound: bool) -> None:
+        # return True
+        ...
 
-def play_none(sound: bool) -> None:
-    # return True
-    ...
+    def note_fctr(self, ch_id: int) -> PlayFuncType:
+        def play_sound(sound: bool):
+            mixer.Channel(ch_id).play(self.sounds[ch_id])
 
+        return play_sound
 
-def play_trigger_factory(port: Serial, data: List[int]) -> PlayFuncType:
-    def play_trigger(sound: bool) -> None:
-        fire(port, data)
+    def trig_fctr(self, port: "Serial|DummySerial", data: List[int]) -> PlayFuncType:
+        def play_trigger(sound: bool) -> None:
+            fire(port, data)
 
-    return play_trigger
+        return play_trigger
 
+    def note_trig_fctr(
+        self,
+        play_trigger: PlayFuncType,
+        play_sound: PlayFuncType,
+    ) -> PlayFuncType:
+        def play_sound_trigger(sound: bool):
+            play_sound(sound)
+            play_trigger(sound)
 
-def play_sound_trigger_factory(play_trigger: PlayFuncType) -> PlayFuncType:
-    def play_sound_trigger(sound: bool):
-        play_sound(sound)
-        play_trigger(sound)
-
-    return play_sound_trigger
-
-
-def get_stim_series(
-    base_msgs: List[Message],
-    base_times: int,
-    trigger_msgs: List[Message],
-    probe_delay: float,
-    probe_tone: List[Message],
-) -> List[Message]:
-    # [base] [base] ... [base] [trigger] [delay time] [probe tone]
-    stim_series: List[Message] = []
-
-    stim_series.extend(base_msgs)
-
-    # repeat base msgs for base_times
-    last_time = base_msgs[-1].time
-    for count in range(1, base_times):
-        tmp_base_msgs = deepcopy(base_msgs)
-        for msg in tmp_base_msgs:
-            msg.time += count * last_time
-        stim_series.extend(tmp_base_msgs)
-
-    # append trigger msgs
-    last_time = stim_series[-1].time
-    tmp_triger_msgs = deepcopy(trigger_msgs)
-    for msg in tmp_triger_msgs:
-        msg.time += last_time
-    stim_series.extend(tmp_triger_msgs)
-
-    # add Probe Tone to stim series
-    tmp_probe_tone = deepcopy(probe_tone)
-    for msg in tmp_probe_tone:
-        msg.time += tmp_triger_msgs[-1].time + probe_delay
-    stim_series.extend(tmp_probe_tone)
-
-    # sort by time
-    stim_series = sorted(stim_series, key=lambda msg: msg.time)
-
-    return stim_series
+        return play_sound_trigger
