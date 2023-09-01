@@ -1,4 +1,3 @@
-from copy import deepcopy
 from typing import List, Protocol
 
 from pygame import mixer
@@ -20,6 +19,7 @@ class Message:
     time_scale: float = 1.0
 
     def __init__(self, play: PlayFuncType, time: float):
+        self.org_time = time
         self.time = time * self.time_scale
         self._play: PlayFuncType = play
 
@@ -46,7 +46,8 @@ class PlayFactories:
 
     def note_fctr(self, ch_id: int) -> PlayFuncType:
         def play_sound(sound: bool):
-            mixer.Channel(ch_id).play(self.sounds[ch_id])
+            if sound:
+                mixer.Channel(ch_id).play(self.sounds[ch_id])
 
         return play_sound
 
