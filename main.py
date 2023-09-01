@@ -2,6 +2,7 @@ import logging
 import time
 
 import numpy as np
+from rich import print
 from serial import Serial
 
 from .dummy_serial import DummySerial
@@ -18,28 +19,31 @@ def run_stim(
     soundfiles: "list[str]",
     sound: bool = True,
 ):
+
+    # change all time_scale via class var
+    Message.time_scale = scale
     init_sound_player()
     pf = PlayFactories(soundfiles)
 
     # build base msgs
     stim_series = []
-    last_time = build_base_msgs(port, pf, 0)[-1].time
+    last_time = build_base_msgs(port, pf, 0)[-1].org_time
     base_time = 0
     for i in range(BASE_TIMES):
         base_time = i * last_time
+        print(base_time)
         base_series = build_base_msgs(port, pf, base_time)
         stim_series.extend(base_series)
 
     # build trigger msgs
-    trigger_msgs = build_trigger_msgs(port, pf, base_time + last_time, delay)
+    trigger_msgs = build_trigger_msgs(port, pf, (base_time + last_time), delay)
     stim_series.extend(trigger_msgs)
-    last_time = stim_series[-1].time
+    last_time = stim_series[-1].org_time
 
     # sort by time
     stim_series = sorted(stim_series, key=lambda msg: msg.time)
 
-    # change all time_scale via class var
-    Message.time_scale = scale
+    print(stim_series)
 
     # play the sound stim series
     error_list = []
