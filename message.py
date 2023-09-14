@@ -1,4 +1,4 @@
-from typing import List, Protocol
+from typing import Protocol
 
 from pygame import mixer
 from serial import Serial
@@ -19,8 +19,8 @@ class Message:
     time_scale: float = 1.0
 
     def __init__(self, play: PlayFuncType, time: float):
-        self.org_time = time
-        self.time = time * self.time_scale
+        self.org_time: float = time
+        self.time: float = time * self.time_scale
         self._play: PlayFuncType = play
 
     def play(self, sound: bool) -> None:
@@ -51,7 +51,7 @@ class PlayFactories:
 
         return play_sound
 
-    def trig_fctr(self, port: "Serial|DummySerial", data: List[int]) -> PlayFuncType:
+    def trig_fctr(self, port: "Serial|DummySerial", data: "list[int]") -> PlayFuncType:
         def play_trigger(sound: bool) -> None:
             fire(port, data)
 
