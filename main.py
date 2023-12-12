@@ -2,7 +2,6 @@ import logging
 import time
 
 import numpy as np
-from rich import print
 from serial import Serial
 
 from .dummy_serial import DummySerial

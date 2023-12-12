@@ -56,8 +56,6 @@ def build_trigger_msgs(
         Message(pt234, t(1.0)),
         Message(pt234, t(1.5)),
         Message(pt1, t(2.0)),
-        # BPM120がベースになっているため、delayは半分にする。
-        # たとえば、delay = 0.2のときBPM120では1拍の20パーセント、つまり 0.5sec * 0.2 秒だけ遅れてほしい
-        Message(pnt, t(2.0) + delay / 2),
+        Message(pnt, t(2.0) + delay),
     ]
     return msg_series
